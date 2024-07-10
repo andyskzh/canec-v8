@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 
 // Cargar variables de entorno
@@ -15,6 +16,9 @@ app.use(express.json());
 
 // Usar rutas de autenticación
 app.use('/api/auth', authRoutes);
+
+// Usar rutas de usuarios
+app.use('/api/users', userRoutes);
 
 // Conectar a MongoDB
 mongoose.connect(process.env.MONGO_URI, {
