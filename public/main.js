@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                   switch(userRole) { // Redirección basada en el rol
                       case 'user':
-                          window.location.href = "userdashboard.html";
+                          window.location.href = "user-dashboard.html";
                           break;
                       case 'consultant':
                           window.location.href = "consultantdashboard.html";
@@ -91,4 +91,24 @@ document.addEventListener('DOMContentLoaded', function() {
           });
       });
   }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const nameElement = document.getElementById('name-placeholder');
+  const emailElement = document.getElementById('email-placeholder');
+  const logoutButton = document.getElementById('logout');
+
+  // Recuperar nombre y correo del localStorage
+  const name = localStorage.getItem('userName');
+  const email = localStorage.getItem('userEmail');
+
+  // Mostrar nombre y correo en la página
+  nameElement.textContent = name || 'No disponible';
+  emailElement.textContent = email || 'No disponible';
+
+  // Función para manejar el cierre de sesión
+  logoutButton.addEventListener('click', function() {
+      localStorage.clear();
+      window.location.href = '../index.html';
+  });
 });
