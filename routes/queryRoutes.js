@@ -1,20 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { getQueries, getQuery, createQuery, updateQuery, deleteQuery, getUserQueries } = require('../controllers/queryController');
-const { protect, consultorMiddleware } = require('../middleware/authMiddleware');
+const {
+    getQueries,
+    getQuery,
+    createQuery,
+    updateQuery,
+    deleteQuery,
+    getUserQueries // asegúrate de tener esta función en tu controlador
+} = require('../controllers/queryController');
+const { protect, adminMiddleware, consultorMiddleware } = require('../middleware/authMiddleware');
 
-// Ruta específica para obtener las consultas del usuario autenticado
-router.get('/myqueries', protect, getUserQueries);
-
-// Ruta para obtener todas las consultas y crear una nueva consulta
 router.route('/')
-  .get(protect, getQueries)
-  .post(protect, createQuery);
+    .get(protect, adminMiddleware, getQueries) // o consultorMiddleware dependiendo de quién tiene acceso
+    .post(protect, adminMiddleware, createQuery);
 
-// Rutas para operaciones específicas en una consulta existente
 router.route('/:id')
-  .get(protect, getQuery)
-  .put(protect, consultorMiddleware, updateQuery)
-  .delete(protect, deleteQuery);
+    .get(protect, getQuery)
+    .put(protect, adminMiddleware, updateQuery)
+    .delete(protect, adminMiddleware, deleteQuery);
+
+router.route('/myqueries')
+    .get(protect, getUserQueries);
 
 module.exports = router;

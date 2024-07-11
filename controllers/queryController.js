@@ -1,69 +1,102 @@
 const Query = require('../models/Query');
 
+// Obtener todas las consultas
 exports.getQueries = async (req, res) => {
-  const queries = await Query.find({});
-  res.json(queries);
+    try {
+        const queries = await Query.find();
+        res.json(queries);
+    } catch (error) {
+        res.status(500).json({ message: 'Error obteniendo consultas' });
+    }
 };
 
+// Obtener una consulta por ID
 exports.getQuery = async (req, res) => {
-  const query = await Query.findById(req.params.id);
-  if (!query) {
-    return res.status(404).json({ message: 'Query not found' });
-  }
-  res.json(query);
+    try {
+        const query = await Query.findById(req.params.id);
+        if (!query) {
+            return res.status(404).json({ message: 'Consulta no encontrada' });
+        }
+        res.json(query);
+    } catch (error) {
+        res.status(500).json({ message: 'Error obteniendo consulta' });
+    }
 };
 
+// Crear una nueva consulta
 exports.createQuery = async (req, res) => {
-  const { title, description, serviceType, date, time, phone, contactMethod } = req.body;
-  const newQuery = new Query({
-    title, description, serviceType, date, time, phone, contactMethod, user: req.user._id
-  });
-  try {
-    await newQuery.save();
-    res.status(201).json(newQuery);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+    const { title, description, serviceType, date, time, phone, contactMethod } = req.body;
+
+    try {
+        const query = new Query({
+            title,
+            description,
+            serviceType,
+            date,
+            time,
+            phone,
+            contactMethod,
+            status: 'pending',
+            user: req.user._id
+        });
+
+        await query.save();
+
+        res.status(201).json(query);
+    } catch (error) {
+        res.status(500).json({ message: 'Error creando consulta' });
+    }
 };
 
+// Actualizar una consulta
 exports.updateQuery = async (req, res) => {
-  try {
-      const queryId = req.params.id;
-      const updatedData = {};
+    const { title, description, serviceType, date, time, phone, contactMethod, status } = req.body;
 
-      // Solo agregar campos que no estén undefined
-      if (req.body.status) updatedData.status = req.body.status;
+    try {
+        const query = await Query.findById(req.params.id);
 
-      const query = await Query.findByIdAndUpdate(queryId, updatedData, { new: true });
+        if (!query) {
+            return res.status(404).json({ message: 'Consulta no encontrada' });
+        }
 
-      if (!query) {
-          return res.status(404).json({ message: 'Consulta no encontrada' });
-      }
+        query.title = title || query.title;
+        query.description = description || query.description;
+        query.serviceType = serviceType || query.serviceType;
+        query.date = date || query.date;
+        query.time = time || query.time;
+        query.phone = phone || query.phone;
+        query.contactMethod = contactMethod || query.contactMethod;
+        query.status = status || query.status;
 
-      res.json(query);
-  } catch (error) {
-      console.error('Error actualizando consulta:', error);
-      res.status(500).json({ message: 'Error actualizando consulta' });
-  }
+        await query.save();
+
+        res.json(query);
+    } catch (error) {
+        res.status(500).json({ message: 'Error actualizando consulta' });
+    }
 };
 
+// Eliminar una consulta
 exports.deleteQuery = async (req, res) => {
-  try {
-    const query = await Query.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Query deleted successfully' });
-  } catch (error) {
-    res.status(404).json({ message: 'Query not found' });
-  }
+    try {
+        const query = await Query.findByIdAndDelete(req.params.id);
+
+        if (!query) {
+            return res.status(404).json({ message: 'Consulta no encontrada' });
+        }
+
+        res.json({ message: 'Consulta eliminada' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error eliminando consulta' });
+    }
 };
 
-
+// Obtener consultas del usuario logueado
 exports.getUserQueries = async (req, res) => {
-  try {
-      const userId = req.user._id;  // req.user debería estar disponible gracias al middleware 'protect'
-      const userQueries = await Query.find({ user: userId });
-      res.json(userQueries);
-  } catch (error) {
-      console.error('Failed to fetch user queries:', error);
-      res.status(500).json({ message: 'Error fetching user queries' });
-  }
+    try {
+        const queries = await Query.find({ user: req.user._id });
+        res.json(queries);
+    } catch (error) {
+        res.status(500).json({ message: 'Error obteniendo consultas' });
+    }
 };
