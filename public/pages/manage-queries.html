@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Consultas</title>
     <link rel="stylesheet" href="../styles.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
       
         #create-query-btn {
@@ -136,6 +139,30 @@ h1 {
     background-color: #17a2b8;
 }
 
+.edit-btn, .delete-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.edit-btn {
+    color: #007bff;
+}
+
+.edit-btn:hover {
+    color: #0056b3;
+}
+
+.delete-btn {
+    color: #dc3545;
+}
+
+.delete-btn:hover {
+    color: #c82333;
+}
+
 
     </style>
     
@@ -180,6 +207,45 @@ h1 {
                 <button type="submit">Enviar</button>
             </form>
         </div>
+
+        <div id="edit-query-form" style="display: none;">
+            <h2>Editar Consulta</h2>
+            <form id="edit-query-form">
+                <input type="hidden" id="edit-query-id">
+                <input type="text" id="edit-title" placeholder="Título" required><br>
+                <textarea id="edit-description" placeholder="Descripción" required></textarea><br>
+                <select id="edit-serviceType" required>
+                    <option value="" disabled selected>Seleccionar Tipo de Servicio</option>
+                    <!-- Opciones -->
+                    <option value="Examen y Evaluación de Documentos">Examen y Evaluación de Documentos</option>
+                    <option value="Auditoría Financiera">Auditoría Financiera</option>
+                    <option value="Auditoría de Cumplimiento">Auditoría de Cumplimiento</option>
+                    <option value="Organización General">Organización General</option>
+                    <option value="Organización de la Producción de Bienes y Servicios">Organización de la Producción de Bienes y Servicios</option>
+                    <option value="Gestión del Capital Humano">Gestión del Capital Humano</option>
+                    <option value="Planificación">Planificación</option>
+                    <option value="Contratación Económica">Contratación Económica</option>
+                    <option value="Contable Financiera">Contable Financiera</option>
+                    <option value="Control Interno">Control Interno</option>
+                    <option value="Costos y Precios">Costos y Precios</option>
+                    <option value="Mercadotecnia">Mercadotecnia</option>
+                    <option value="Servicios de contabilidad, auditoría financiera y teneduría de libros">Servicios de contabilidad, auditoría financiera y teneduría de libros</option>
+                    <option value="Servicios de asesoramiento tributario">Servicios de asesoramiento tributario</option>
+                    <option value="Servicios de consultoría y gestión">Servicios de consultoría y gestión</option>
+                    <option value="Otros servicios profesionales, científicos y técnicos">Otros servicios profesionales, científicos y técnicos</option>
+                </select><br>
+                <input type="date" id="edit-date" required><br>
+                <input type="time" id="edit-time" required><br>
+                <input type="tel" id="edit-phone" placeholder="Teléfono" required><br>
+                <select id="edit-contactMethod" required>
+                    <option value="" disabled selected>Seleccionar Método de Contacto</option>
+                    <option value="Teléfono">Teléfono</option>
+                    <option value="Correo">Correo</option>
+                </select><br>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+
         <div id="queries-container">
             <!-- Aquí se mostrarán las consultas -->
         </div>
@@ -187,11 +253,13 @@ h1 {
 
     <script src="../main.js"></script> 
     <script>
-   document.addEventListener('DOMContentLoaded', function() {
+ document.addEventListener('DOMContentLoaded', function() {
     const queriesContainer = document.getElementById('queries-container');
     const createQueryForm = document.getElementById('create-query-form');
     const showCreateFormBtn = document.getElementById('show-create-form-btn');
     const newQueryForm = document.getElementById('new-query-form');
+    const editQueryForm = document.getElementById('edit-query-form');
+    const editQueryFormElement = document.getElementById('edit-query-form');
 
     showCreateFormBtn.addEventListener('click', function() {
         createQueryForm.style.display = 'block';
@@ -232,12 +300,42 @@ h1 {
                         break;
                 }
 
+                const editButton = document.createElement('button');
+                editButton.innerHTML = '<i class="fas fa-edit"></i>';
+                editButton.classList.add('edit-btn');
+                editButton.addEventListener('click', function() {
+                    showEditForm(query);
+                });
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.addEventListener('click', function() {
+                    confirmDelete(query._id);
+                });
+
                 queryDiv.appendChild(titleDiv);
                 queryDiv.appendChild(statusSpan);
+                queryDiv.appendChild(editButton);
+                queryDiv.appendChild(deleteButton);
                 queriesContainer.appendChild(queryDiv);
             });
         })
         .catch(error => console.error('Error:', error));
+    }
+
+    // Función para mostrar el formulario de edición con los datos de la consulta
+    function showEditForm(query) {
+        document.getElementById('edit-query-id').value = query._id;
+        document.getElementById('edit-title').value = query.title;
+        document.getElementById('edit-description').value = query.description;
+        document.getElementById('edit-serviceType').value = query.serviceType;
+        document.getElementById('edit-date').value = query.date;
+        document.getElementById('edit-time').value = query.time;
+        document.getElementById('edit-phone').value = query.phone;
+        document.getElementById('edit-contactMethod').value = query.contactMethod;
+        editQueryFormElement.style.display = 'block';
+        createQueryForm.style.display = 'none';
     }
 
     // Función para manejar el envío del formulario de creación de consulta
@@ -272,6 +370,72 @@ h1 {
         })
         .catch(error => console.error('Error:', error));
     });
+
+    // Función para manejar el envío del formulario de edición de consulta
+    editQueryForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const queryId = document.getElementById('edit-query-id').value;
+
+        const updatedQuery = {
+            title: document.getElementById('edit-title').value,
+            description: document.getElementById('edit-description').value,
+            serviceType: document.getElementById('edit-serviceType').value,
+            date: document.getElementById('edit-date').value,
+            time: document.getElementById('edit-time').value,
+            phone: document.getElementById('edit-phone').value,
+            contactMethod: document.getElementById('edit-contactMethod').value
+        };
+
+        fetch(`/api/queries/${queryId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(updatedQuery)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Consulta actualizada:', data);
+            editQueryFormElement.style.display = 'none';
+            loadUserQueries();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Función para confirmar y borrar una consulta
+    function confirmDelete(queryId) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, bórralo!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteQuery(queryId);
+            }
+        });
+    }
+
+    // Función para borrar una consulta
+    function deleteQuery(queryId) {
+        fetch(`/api/queries/${queryId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Consulta borrada:', data);
+            loadUserQueries();
+        })
+        .catch(error => console.error('Error:', error));
+    }
 
     loadUserQueries();
 });
