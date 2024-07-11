@@ -77,13 +77,75 @@
     .status-under-review {
         background-color: #17a2b8; /* Azul para en revisión */
     }
+
+    #show-create-form-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#show-create-form-btn:hover {
+    background-color: #0056b3;
+}
+
+#create-query-form {
+    margin-top: 20px;
+}
+
+#create-query-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+#create-query-form input,
+#create-query-form textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#create-query-form button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#create-query-form button:hover {
+    background-color: #218838;
+}
+
     </style>
     
 </head>
 <body>
     <div class="container">
         <h1>Gestión de Consultas</h1>
-        <button id="create-query-btn">Crear Consulta</button>
+        <button id="show-create-form-btn">Crear Consulta</button>
+        
+        <div id="create-query-form" style="display: none;">
+            <h2>Crear Nueva Consulta</h2>
+            <form id="new-query-form">
+                <input type="text" id="title" placeholder="Título" required><br>
+                <textarea id="description" placeholder="Descripción" required></textarea><br>
+                <input type="text" id="serviceType" placeholder="Tipo de Servicio" required><br>
+                <input type="date" id="date" required><br>
+                <input type="time" id="time" required><br>
+                <input type="tel" id="phone" placeholder="Teléfono" required><br>
+                <input type="text" id="contactMethod" placeholder="Método de Contacto" required><br>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
         <div id="queries-container">
             <!-- Aquí se mostrarán las consultas -->
         </div>
@@ -93,7 +155,15 @@
     <script>
    document.addEventListener('DOMContentLoaded', function() {
     const queriesContainer = document.getElementById('queries-container');
+    const createQueryForm = document.getElementById('create-query-form');
+    const showCreateFormBtn = document.getElementById('show-create-form-btn');
+    const newQueryForm = document.getElementById('new-query-form');
 
+    showCreateFormBtn.addEventListener('click', function() {
+        createQueryForm.style.display = 'block';
+    });
+
+    // Función para cargar las consultas del usuario
     function loadUserQueries() {
         fetch('/api/queries/myqueries', {
             method: 'GET',
@@ -103,6 +173,7 @@
         })
         .then(response => response.json())
         .then(queries => {
+            queriesContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar consultas
             queries.forEach(query => {
                 const queryDiv = document.createElement('div');
                 queryDiv.classList.add('query-item');
@@ -135,8 +206,42 @@
         .catch(error => console.error('Error:', error));
     }
 
+    // Función para manejar el envío del formulario de creación de consulta
+    newQueryForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const newQuery = {
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value,
+            serviceType: document.getElementById('serviceType').value,
+            date: document.getElementById('date').value,
+            time: document.getElementById('time').value,
+            phone: document.getElementById('phone').value,
+            contactMethod: document.getElementById('contactMethod').value,
+            status: 'pending'
+        };
+
+        fetch('/api/queries', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(newQuery)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Consulta creada:', data);
+            createQueryForm.style.display = 'none';
+            newQueryForm.reset();
+            loadUserQueries();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
     loadUserQueries();
 });
+
 
     </script>
 </body>
