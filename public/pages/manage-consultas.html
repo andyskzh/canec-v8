@@ -4,158 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Consultor</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-     /* Añadir a tu archivo styles.css */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-}
+        /* Añadir a tu archivo styles.css */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
 
-.container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 20px;
-    max-width: 800px;
-    margin: auto;
-}
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
 
-h1 {
-    color: #0056b3;
-    text-align: center;
-}
+        h1 {
+            color: #0056b3;
+            text-align: center;
+        }
 
-#show-create-form-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    display: block;
-    width: 200px;
-    margin: 20px auto;
-    text-align: center;
-}
+        #show-create-form-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            text-align: center;
+        }
 
-#show-create-form-btn:hover {
-    background-color: #0056b3;
-}
+        #show-create-form-btn:hover {
+            background-color: #0056b3;
+        }
 
-#create-query-form, #edit-query-form {
-    margin-top: 20px;
-}
+        #create-query-form, #edit-query-form {
+            margin-top: 20px;
+        }
 
-#create-query-form h2, #edit-query-form h2 {
-    text-align: center;
-    color: #0056b3;
-}
+        #create-query-form h2, #edit-query-form h2 {
+            text-align: center;
+            color: #0056b3;
+        }
 
-#create-query-form form, #edit-query-form form {
-    display: flex;
-    flex-direction: column;
-}
+        #create-query-form form, #edit-query-form form {
+            display: flex;
+            flex-direction: column;
+        }
 
-#create-query-form input, #create-query-form textarea, #create-query-form select, 
-#edit-query-form input, #edit-query-form textarea, #edit-query-form select {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
+        #create-query-form input, #create-query-form textarea, #create-query-form select, 
+        #edit-query-form input, #edit-query-form textarea, #edit-query-form select {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
 
-#create-query-form button, #edit-query-form button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
+        #create-query-form button, #edit-query-form button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-#create-query-form button:hover, #edit-query-form button:hover {
-    background-color: #218838;
-}
+        #create-query-form button:hover, #edit-query-form button:hover {
+            background-color: #218838;
+        }
 
-.query-item {
-    padding: 15px;
-    margin-top: 10px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 16px;
-    background: #eee;
-    border: 1px solid #ddd;
-}
+        .query-item {
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            background: #eee;
+            border: 1px solid #ddd;
+        }
 
-.query-details {
-    margin-top: 10px;
-    padding: 10px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
+        .query-details {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
 
-.query-status {
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-}
+        .query-status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
 
-.status-pending {
-    background-color: #ffc107;
-}
+        .status-pending {
+            background-color: #ffc107;
+        }
 
-.status-approved {
-    background-color: #28a745;
-}
+        .status-approved {
+            background-color: #28a745;
+        }
 
-.status-under-review {
-    background-color: #17a2b8;
-}
+        .status-under-review {
+            background-color: #17a2b8;
+        }
 
-.details-btn, .edit-btn, .delete-btn {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    margin-left: 10px;
-}
+        .details-btn, .edit-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin-left: 10px;
+        }
 
-.details-btn {
-    color: #007bff;
-}
+        .details-btn {
+            color: #007bff;
+        }
 
-.details-btn:hover {
-    color: #0056b3;
-}
+        .details-btn:hover {
+            color: #0056b3;
+        }
 
-.edit-btn {
-    color: #007bff;
-}
+        .edit-btn {
+            color: #007bff;
+        }
 
-.edit-btn:hover {
-    color: #0056b3;
-}
-
-.delete-btn {
-    color: #dc3545;
-}
-
-.delete-btn:hover {
-    color: #c82333;
-}
-
+        .edit-btn:hover {
+            color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -181,133 +172,131 @@ h1 {
         </div>
     </div>
     
-    <script src="consultor-queries.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    const queriesContainer = document.getElementById('queries-container');
-    const editQueryFormElement = document.getElementById('edit-query-form');
+            const queriesContainer = document.getElementById('queries-container');
+            const editQueryFormElement = document.getElementById('edit-query-form');
 
-    // Función para cargar todas las consultas
-    function loadAllQueries() {
-        fetch('/api/queries', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            // Función para cargar todas las consultas
+            function loadAllQueries() {
+                fetch('/api/queries/all', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => response.json())
+                .then(queries => {
+                    queriesContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar consultas
+                    queries.forEach(query => {
+                        const queryDiv = document.createElement('div');
+                        queryDiv.classList.add('query-item');
+
+                        const titleDiv = document.createElement('div');
+                        titleDiv.textContent = `Título: ${query.title}`;
+                        
+                        const statusSpan = document.createElement('span');
+                        statusSpan.textContent = query.status;
+                        statusSpan.classList.add('query-status');
+
+                        // Aplicar la clase de color basada en el estado
+                        switch(query.status) {
+                            case 'pending':
+                                statusSpan.classList.add('status-pending');
+                                break;
+                            case 'approved':
+                                statusSpan.classList.add('status-approved');
+                                break;
+                            case 'under review':
+                                statusSpan.classList.add('status-under-review');
+                                break;
+                        }
+
+                        const detailsButton = document.createElement('button');
+                        detailsButton.innerHTML = '<i class="fas fa-info-circle"></i>';
+                        detailsButton.classList.add('details-btn');
+                        detailsButton.addEventListener('click', function() {
+                            toggleDetails(queryDiv);
+                        });
+
+                        const editButton = document.createElement('button');
+                        editButton.innerHTML = '<i class="fas fa-edit"></i>';
+                        editButton.classList.add('edit-btn');
+                        editButton.addEventListener('click', function() {
+                            showEditForm(query);
+                        });
+
+                        queryDiv.appendChild(titleDiv);
+                        queryDiv.appendChild(detailsButton);
+                        queryDiv.appendChild(statusSpan);
+                        queryDiv.appendChild(editButton);
+
+                        // Crear el contenedor de detalles
+                        const detailsDiv = document.createElement('div');
+                        detailsDiv.classList.add('query-details');
+                        detailsDiv.style.display = 'none';
+                        detailsDiv.innerHTML = `
+                            <p><strong>Descripción:</strong> ${query.description}</p>
+                            <p><strong>Tipo de Servicio:</strong> ${query.serviceType}</p>
+                            <p><strong>Fecha:</strong> ${query.date}</p>
+                            <p><strong>Hora:</strong> ${query.time}</p>
+                            <p><strong>Teléfono:</strong> ${query.phone}</p>
+                            <p><strong>Método de Contacto:</strong> ${query.contactMethod}</p>
+                        `;
+
+                        queryDiv.appendChild(detailsDiv);
+                        queriesContainer.appendChild(queryDiv);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
             }
-        })
-        .then(response => response.json())
-        .then(queries => {
-            queriesContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar consultas
-            queries.forEach(query => {
-                const queryDiv = document.createElement('div');
-                queryDiv.classList.add('query-item');
 
-                const titleDiv = document.createElement('div');
-                titleDiv.textContent = `Título: ${query.title}`;
-                
-                const statusSpan = document.createElement('span');
-                statusSpan.textContent = query.status;
-                statusSpan.classList.add('query-status');
+            // Función para mostrar el formulario de edición con los datos de la consulta
+            function showEditForm(query) {
+                document.getElementById('edit-query-id').value = query._id;
+                document.getElementById('edit-status').value = query.status;
+                editQueryFormElement.style.display = 'block';
+            }
 
-                // Aplicar la clase de color basada en el estado
-                switch(query.status) {
-                    case 'pending':
-                        statusSpan.classList.add('status-pending');
-                        break;
-                    case 'approved':
-                        statusSpan.classList.add('status-approved');
-                        break;
-                    case 'under review':
-                        statusSpan.classList.add('status-under-review');
-                        break;
-                }
+            // Función para manejar el envío del formulario de edición de consulta
+            editQueryFormElement.addEventListener('submit', function(event) {
+                event.preventDefault();
 
-                const detailsButton = document.createElement('button');
-                detailsButton.innerHTML = '<i class="fas fa-info-circle"></i>';
-                detailsButton.classList.add('details-btn');
-                detailsButton.addEventListener('click', function() {
-                    toggleDetails(queryDiv);
-                });
+                const queryId = document.getElementById('edit-query-id').value;
 
-                const editButton = document.createElement('button');
-                editButton.innerHTML = '<i class="fas fa-edit"></i>';
-                editButton.classList.add('edit-btn');
-                editButton.addEventListener('click', function() {
-                    showEditForm(query);
-                });
+                const updatedQuery = {
+                    status: document.getElementById('edit-status').value
+                };
 
-                queryDiv.appendChild(titleDiv);
-                queryDiv.appendChild(detailsButton);
-                queryDiv.appendChild(statusSpan);
-                queryDiv.appendChild(editButton);
-
-                // Crear el contenedor de detalles
-                const detailsDiv = document.createElement('div');
-                detailsDiv.classList.add('query-details');
-                detailsDiv.style.display = 'none';
-                detailsDiv.innerHTML = `
-                    <p><strong>Descripción:</strong> ${query.description}</p>
-                    <p><strong>Tipo de Servicio:</strong> ${query.serviceType}</p>
-                    <p><strong>Fecha:</strong> ${query.date}</p>
-                    <p><strong>Hora:</strong> ${query.time}</p>
-                    <p><strong>Teléfono:</strong> ${query.phone}</p>
-                    <p><strong>Método de Contacto:</strong> ${query.contactMethod}</p>
-                `;
-
-                queryDiv.appendChild(detailsDiv);
-                queriesContainer.appendChild(queryDiv);
+                fetch(`/api/queries/${queryId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(updatedQuery)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Estado de la consulta actualizado:', data);
+                    editQueryFormElement.style.display = 'none';
+                    loadAllQueries();
+                })
+                .catch(error => console.error('Error:', error));
             });
-        })
-        .catch(error => console.error('Error:', error));
-    }
 
-    // Función para mostrar el formulario de edición con los datos de la consulta
-    function showEditForm(query) {
-        document.getElementById('edit-query-id').value = query._id;
-        document.getElementById('edit-status').value = query.status;
-        editQueryFormElement.style.display = 'block';
-    }
+            // Función para mostrar u ocultar los detalles de una consulta
+            function toggleDetails(queryDiv) {
+                const detailsDiv = queryDiv.querySelector('.query-details');
+                if (detailsDiv.style.display === 'none') {
+                    detailsDiv.style.display = 'block';
+                } else {
+                    detailsDiv.style.display = 'none';
+                }
+            }
 
-    // Función para manejar el envío del formulario de edición de consulta
-    editQueryFormElement.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const queryId = document.getElementById('edit-query-id').value;
-
-        const updatedQuery = {
-            status: document.getElementById('edit-status').value
-        };
-
-        fetch(`/api/queries/${queryId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(updatedQuery)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Estado de la consulta actualizado:', data);
-            editQueryFormElement.style.display = 'none';
             loadAllQueries();
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
-    // Función para mostrar u ocultar los detalles de una consulta
-    function toggleDetails(queryDiv) {
-        const detailsDiv = queryDiv.querySelector('.query-details');
-        if (detailsDiv.style.display === 'none') {
-            detailsDiv.style.display = 'block';
-        } else {
-            detailsDiv.style.display = 'none';
-        }
-    }
-
-    loadAllQueries();
-});
-
+        });
     </script>
 </body>
 </html>

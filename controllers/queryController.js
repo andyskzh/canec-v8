@@ -57,8 +57,9 @@ exports.getQuery = async (req, res) => {
 };
 
 // Actualizar una consulta
+// Actualizar una consulta
 exports.updateQuery = async (req, res) => {
-    const { title, description, serviceType, date, time, phone, contactMethod } = req.body;
+    const { title, description, serviceType, date, time, phone, contactMethod, status } = req.body;
 
     try {
         const query = await Query.findById(req.params.id);
@@ -67,23 +68,29 @@ exports.updateQuery = async (req, res) => {
             return res.status(404).json({ message: 'Consulta no encontrada' });
         }
 
-        if (query.user.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ message: 'No autorizado para actualizar esta consulta' });
-        }
+        // Si el usuario no es un consultor, solo puede actualizar sus propias consultas
+        if (req.user.role !== 'consultant') {
+            if (query.user.toString() !== req.user._id.toString()) {
+                return res.status(403).json({ message: 'No autorizado para actualizar esta consulta' });
+            }
 
-        // Solo actualizar los campos proporcionados
-        if (title) query.title = title;
-        if (description) query.description = description;
-        if (serviceType) query.serviceType = serviceType;
-        if (date) query.date = date;
-        if (time) query.time = time;
-        if (phone) query.phone = phone;
-        if (contactMethod) query.contactMethod = contactMethod;
+            // Solo actualizar los campos proporcionados para usuarios normales
+            if (title) query.title = title;
+            if (description) query.description = description;
+            if (serviceType) query.serviceType = serviceType;
+            if (date) query.date = date;
+            if (time) query.time = time;
+            if (phone) query.phone = phone;
+            if (contactMethod) query.contactMethod = contactMethod;
+        } else {
+            // Si el usuario es un consultor, solo puede actualizar el estado de la consulta
+            if (status) query.status = status;
+        }
 
         await query.save();
         res.status(200).json(query);
     } catch (error) {
-        res.status(500).json({ message: 'Error actualizando consulta' });
+        res.status(500).json({ message: 'Error actualizando consulta', error: error.message });
     }
 };
 
