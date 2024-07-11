@@ -7,9 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<style>
-    /* Añadir a tu archivo styles.css */
+    <style>
+     /* Añadir a tu archivo styles.css */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
@@ -157,48 +156,11 @@ h1 {
     color: #c82333;
 }
 
-</style>
+    </style>
+</head>
 <body>
     <div class="container">
         <h1>Dashboard de Consultor</h1>
-        <button id="show-create-form-btn">Crear Consulta</button>
-
-        <div id="create-query-form" style="display: none;">
-            <h2>Crear Nueva Consulta</h2>
-            <form id="new-query-form">
-                <input type="text" id="title" placeholder="Título" required><br>
-                <textarea id="description" placeholder="Descripción" required></textarea><br>
-                <select id="serviceType" required>
-                    <option value="" disabled selected>Seleccionar Tipo de Servicio</option>
-                    <!-- Opciones -->
-                    <option value="Examen y Evaluación de Documentos">Examen y Evaluación de Documentos</option>
-                    <option value="Auditoría Financiera">Auditoría Financiera</option>
-                    <option value="Auditoría de Cumplimiento">Auditoría de Cumplimiento</option>
-                    <option value="Organización General">Organización General</option>
-                    <option value="Organización de la Producción de Bienes y Servicios">Organización de la Producción de Bienes y Servicios</option>
-                    <option value="Gestión del Capital Humano">Gestión del Capital Humano</option>
-                    <option value="Planificación">Planificación</option>
-                    <option value="Contratación Económica">Contratación Económica</option>
-                    <option value="Contable Financiera">Contable Financiera</option>
-                    <option value="Control Interno">Control Interno</option>
-                    <option value="Costos y Precios">Costos y Precios</option>
-                    <option value="Mercadotecnia">Mercadotecnia</option>
-                    <option value="Servicios de contabilidad, auditoría financiera y teneduría de libros">Servicios de contabilidad, auditoría financiera y teneduría de libros</option>
-                    <option value="Servicios de asesoramiento tributario">Servicios de asesoramiento tributario</option>
-                    <option value="Servicios de consultoría y gestión">Servicios de consultoría y gestión</option>
-                    <option value="Otros servicios profesionales, científicos y técnicos">Otros servicios profesionales, científicos y técnicos</option>
-                </select><br>
-                <input type="date" id="date" required><br>
-                <input type="time" id="time" required><br>
-                <input type="tel" id="phone" placeholder="Teléfono" required><br>
-                <select id="contactMethod" required>
-                    <option value="" disabled selected>Seleccionar Método de Contacto</option>
-                    <option value="Teléfono">Teléfono</option>
-                    <option value="Correo">Correo</option>
-                </select><br>
-                <button type="submit">Enviar</button>
-            </form>
-        </div>
 
         <div id="edit-query-form" style="display: none;">
             <h2>Editar Estado de Consulta</h2>
@@ -223,14 +185,7 @@ h1 {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
     const queriesContainer = document.getElementById('queries-container');
-    const createQueryForm = document.getElementById('create-query-form');
-    const showCreateFormBtn = document.getElementById('show-create-form-btn');
-    const newQueryForm = document.getElementById('new-query-form');
     const editQueryFormElement = document.getElementById('edit-query-form');
-
-    showCreateFormBtn.addEventListener('click', function() {
-        createQueryForm.style.display = 'block';
-    });
 
     // Función para cargar todas las consultas
     function loadAllQueries() {
@@ -282,8 +237,8 @@ h1 {
                 });
 
                 queryDiv.appendChild(titleDiv);
-                queryDiv.appendChild(statusSpan);
                 queryDiv.appendChild(detailsButton);
+                queryDiv.appendChild(statusSpan);
                 queryDiv.appendChild(editButton);
 
                 // Crear el contenedor de detalles
@@ -311,41 +266,7 @@ h1 {
         document.getElementById('edit-query-id').value = query._id;
         document.getElementById('edit-status').value = query.status;
         editQueryFormElement.style.display = 'block';
-        createQueryForm.style.display = 'none';
     }
-
-    // Función para manejar el envío del formulario de creación de consulta
-    newQueryForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const newQuery = {
-            title: document.getElementById('title').value,
-            description: document.getElementById('description').value,
-            serviceType: document.getElementById('serviceType').value,
-            date: document.getElementById('date').value,
-            time: document.getElementById('time').value,
-            phone: document.getElementById('phone').value,
-            contactMethod: document.getElementById('contactMethod').value,
-            status: 'pending'
-        };
-
-        fetch('/api/queries', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(newQuery)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Consulta creada:', data);
-            createQueryForm.style.display = 'none';
-            newQueryForm.reset();
-            loadAllQueries();
-        })
-        .catch(error => console.error('Error:', error));
-    });
 
     // Función para manejar el envío del formulario de edición de consulta
     editQueryFormElement.addEventListener('submit', function(event) {
