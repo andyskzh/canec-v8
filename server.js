@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const queryRoutes = require('./routes/queryRoutes');
+const path = require('path');
+const cors = require('cors');
 
 
 
@@ -13,8 +15,12 @@ dotenv.config();
 // Crear la aplicación Express
 const app = express();
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Middleware para parsear JSON
 app.use(express.json());
+
+app.use(cors());
 
 // Usar rutas de autenticación
 app.use('/api/auth', authRoutes);
@@ -33,12 +39,11 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch((err) => console.log('MongoDB connection error:', err));
 
 // Definir un puerto y escuchar peticiones
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// Rutas básicas (temporales)
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
