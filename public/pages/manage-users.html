@@ -200,7 +200,7 @@ h1 {
     
     <script src="admin-users.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+       document.addEventListener('DOMContentLoaded', function() {
     const usersContainer = document.getElementById('users-container');
     const createUserForm = document.getElementById('create-user-form');
     const showCreateFormBtn = document.getElementById('show-create-form-btn');
@@ -209,6 +209,7 @@ h1 {
 
     showCreateFormBtn.addEventListener('click', function() {
         createUserForm.style.display = 'block';
+        editUserFormElement.style.display = 'none';
     });
 
     // Función para cargar todos los usuarios
