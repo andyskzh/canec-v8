@@ -32,13 +32,7 @@ exports.updateQuery = async (req, res) => {
       const updatedData = {};
 
       // Solo agregar campos que no estén undefined
-      if (req.body.title) updatedData.title = req.body.title;
-      if (req.body.description) updatedData.description = req.body.description;
-      if (req.body.serviceType) updatedData.serviceType = req.body.serviceType;
-      if (req.body.date) updatedData.date = req.body.date;
-      if (req.body.time) updatedData.time = req.body.time;
-      if (req.body.phone) updatedData.phone = req.body.phone;
-      if (req.body.contactMethod) updatedData.contactMethod = req.body.contactMethod;
+      if (req.body.status) updatedData.status = req.body.status;
 
       const query = await Query.findByIdAndUpdate(queryId, updatedData, { new: true });
 
