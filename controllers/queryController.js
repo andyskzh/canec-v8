@@ -43,6 +43,16 @@ exports.getQueries = async (req, res) => {
     }
 };
 
+// Obtener todas las consultas (para administradores)
+exports.getAllQueries = async (req, res) => {
+    try {
+        const queries = await Query.find().populate('user', 'name email');
+        res.json(queries);
+    } catch (error) {
+        res.status(500).json({ message: 'Error obteniendo todas las consultas' });
+    }
+};
+
 // Obtener una consulta específica por ID
 exports.getQuery = async (req, res) => {
     try {
@@ -57,7 +67,6 @@ exports.getQuery = async (req, res) => {
 };
 
 // Actualizar una consulta
-// Actualizar una consulta
 exports.updateQuery = async (req, res) => {
     const { title, description, serviceType, date, time, phone, contactMethod, status } = req.body;
 
@@ -69,7 +78,7 @@ exports.updateQuery = async (req, res) => {
         }
 
         // Si el usuario no es un consultor, solo puede actualizar sus propias consultas
-        if (req.user.role !== 'consultant') {
+        if (req.user.role !== 'consultant' && req.user.role !== 'admin') {
             if (query.user.toString() !== req.user._id.toString()) {
                 return res.status(403).json({ message: 'No autorizado para actualizar esta consulta' });
             }
@@ -83,7 +92,14 @@ exports.updateQuery = async (req, res) => {
             if (phone) query.phone = phone;
             if (contactMethod) query.contactMethod = contactMethod;
         } else {
-            // Si el usuario es un consultor, solo puede actualizar el estado de la consulta
+            // Si el usuario es un consultor o administrador, puede actualizar el estado y otros campos
+            if (title) query.title = title;
+            if (description) query.description = description;
+            if (serviceType) query.serviceType = serviceType;
+            if (date) query.date = date;
+            if (time) query.time = time;
+            if (phone) query.phone = phone;
+            if (contactMethod) query.contactMethod = contactMethod;
             if (status) query.status = status;
         }
 
@@ -103,11 +119,12 @@ exports.deleteQuery = async (req, res) => {
             return res.status(404).json({ message: 'Consulta no encontrada' });
         }
 
-        if (query.user.toString() !== req.user._id.toString()) {
+        // Los administradores pueden eliminar cualquier consulta, los usuarios solo sus propias consultas
+        if (req.user.role !== 'admin' && query.user.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'No autorizado para eliminar esta consulta' });
         }
 
-        await query.remove();
+        await Query.deleteOne({ _id: req.params.id });
         res.status(200).json({ message: 'Consulta eliminada' });
     } catch (error) {
         res.status(500).json({ message: 'Error eliminando consulta', error: error.message });
