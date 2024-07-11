@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Consultas</title>
+    <link rel="stylesheet" href="../styles.css"> 
+    <style>
+        body {
+            font-family: 'Arial', sans-serif; /* Usa la fuente que prefieras */
+            background-color: #f4f4f4; /* Un color de fondo neutro */
+            color: #333; /* Color de texto oscuro para mejor legibilidad */
+            margin: 0;
+            padding: 20px;
+        }
+    
+        .container {
+            background: white; /* Fondo blanco para los contenidos */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra para dar profundidad */
+            padding: 20px;
+            max-width: 800px; /* Ancho máximo para mejor legibilidad */
+            margin: auto; /* Centrado en la página */
+        }
+    
+        h1 {
+            color: #0056b3; /* Un color que se destaque para los títulos */
+            text-align: center;
+        }
+    
+        #create-query-btn {
+            background-color: #007bff; /* Botón azul que coincida con el tema general */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 200px;
+            margin: 20px auto; /* Centrar el botón en la página */
+            text-align: center;
+        }
+    
+        #create-query-btn:hover {
+            background-color: #0056b3; /* Oscurecer el botón al pasar el mouse */
+        }
+    
+        #queries-container {
+            margin-top: 20px;
+        }
+    
+        .query-item {
+        padding: 15px;
+        margin-top: 10px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px; /* Aumenta el tamaño de la fuente */
+    }
+
+    .query-status {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .status-pending {
+        background-color: #ffc107; /* Amarillo para pendiente */
+    }
+
+    .status-approved {
+        background-color: #28a745; /* Verde para aprobado */
+    }
+
+    .status-under-review {
+        background-color: #17a2b8; /* Azul para en revisión */
+    }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Consultas</h1>
+        <button id="create-query-btn">Crear Consulta</button>
+        <div id="queries-container">
+            <!-- Aquí se mostrarán las consultas -->
+        </div>
+    </div>
+
+    <script src="../main.js"></script> 
+    <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const queriesContainer = document.getElementById('queries-container');
+
+    function loadUserQueries() {
+        fetch('/api/queries/myqueries', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then(response => response.json())
+        .then(queries => {
+            queries.forEach(query => {
+                const queryDiv = document.createElement('div');
+                queryDiv.classList.add('query-item');
+
+                const titleDiv = document.createElement('div');
+                titleDiv.textContent = `Título: ${query.title}`;
+                
+                const statusSpan = document.createElement('span');
+                statusSpan.textContent = query.status;
+                statusSpan.classList.add('query-status');
+
+                // Aplicar la clase de color basada en el estado
+                switch(query.status) {
+                    case 'pending':
+                        statusSpan.classList.add('status-pending');
+                        break;
+                    case 'approved':
+                        statusSpan.classList.add('status-approved');
+                        break;
+                    case 'under review':
+                        statusSpan.classList.add('status-under-review');
+                        break;
+                }
+
+                queryDiv.appendChild(titleDiv);
+                queryDiv.appendChild(statusSpan);
+                queriesContainer.appendChild(queryDiv);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    loadUserQueries();
+});
+
+    </script>
+</body>
+</html>

@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+
 
 exports.getAllUsers = async (req, res) => {
   const users = await User.find({});
@@ -27,8 +29,10 @@ exports.updateUser = async (req, res) => {
       user.name = name || user.name;
       user.email = email || user.email;
       if (password) {
-          user.password = password;  // Asegúrate de hashear la contraseña antes de guardarla
-      }
+        const salt = await bcrypt.genSalt(10); // Generar salt
+            const hashedPassword = await bcrypt.hash(password, salt); // Hashear la nueva contraseña
+            user.password = hashedPassword; // Asegúrate de que se asigna correctamente
+        }
 
       await user.save();
       res.json({ message: "User updated successfully" });

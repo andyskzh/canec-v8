@@ -49,3 +49,15 @@ exports.deleteQuery = async (req, res) => {
     res.status(404).json({ message: 'Query not found' });
   }
 };
+
+
+exports.getUserQueries = async (req, res) => {
+  try {
+      const userId = req.user._id;  // req.user debería estar disponible gracias al middleware 'protect'
+      const userQueries = await Query.find({ user: userId });
+      res.json(userQueries);
+  } catch (error) {
+      console.error('Failed to fetch user queries:', error);
+      res.status(500).json({ message: 'Error fetching user queries' });
+  }
+};
