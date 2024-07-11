@@ -20,6 +20,6 @@ router.route('/all')
 router.route('/:id')
     .get(protect, getQuery) // Obtener una consulta específica
     .put(protect, updateQuery) // Actualizar una consulta
-    .delete(protect, deleteQuery); // Eliminar una consulta (opcional)
+    .delete(protect, deleteQuery); // Eliminar una consulta
 
 module.exports = router;

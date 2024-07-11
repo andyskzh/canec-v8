@@ -87,7 +87,7 @@ exports.updateQuery = async (req, res) => {
     }
 };
 
-// Eliminar una consulta (opcional)
+// Eliminar una consulta
 exports.deleteQuery = async (req, res) => {
     try {
         const query = await Query.findById(req.params.id);
@@ -103,6 +103,6 @@ exports.deleteQuery = async (req, res) => {
         await query.remove();
         res.status(200).json({ message: 'Consulta eliminada' });
     } catch (error) {
-        res.status(500).json({ message: 'Error eliminando consulta' });
+        res.status(500).json({ message: 'Error eliminando consulta', error: error.message });
     }
 };
