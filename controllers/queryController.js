@@ -28,16 +28,28 @@ exports.createQuery = async (req, res) => {
 
 exports.updateQuery = async (req, res) => {
   try {
-    const query = await Query.findById(req.params.id);
-    if (!query) {
-      return res.status(404).json({ message: 'Query not found' });
-    }
-    // Actualiza solo los campos que se pasen en la solicitud
-    for (let prop in req.body) if (req.body[prop]) query[prop] = req.body[prop];
-    const updatedQuery = await query.save();
-    res.json(updatedQuery);
+      const queryId = req.params.id;
+      const updatedData = {};
+
+      // Solo agregar campos que no estén undefined
+      if (req.body.title) updatedData.title = req.body.title;
+      if (req.body.description) updatedData.description = req.body.description;
+      if (req.body.serviceType) updatedData.serviceType = req.body.serviceType;
+      if (req.body.date) updatedData.date = req.body.date;
+      if (req.body.time) updatedData.time = req.body.time;
+      if (req.body.phone) updatedData.phone = req.body.phone;
+      if (req.body.contactMethod) updatedData.contactMethod = req.body.contactMethod;
+
+      const query = await Query.findByIdAndUpdate(queryId, updatedData, { new: true });
+
+      if (!query) {
+          return res.status(404).json({ message: 'Consulta no encontrada' });
+      }
+
+      res.json(query);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+      console.error('Error actualizando consulta:', error);
+      res.status(500).json({ message: 'Error actualizando consulta' });
   }
 };
 

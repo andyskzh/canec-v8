@@ -212,9 +212,9 @@ h1 {
             <h2>Editar Consulta</h2>
             <form id="edit-query-form">
                 <input type="hidden" id="edit-query-id">
-                <input type="text" id="edit-title" placeholder="Título" required><br>
-                <textarea id="edit-description" placeholder="Descripción" required></textarea><br>
-                <select id="edit-serviceType" required>
+                <input type="text" id="edit-title" placeholder="Título"><br>
+                <textarea id="edit-description" placeholder="Descripción"></textarea><br>
+                <select id="edit-serviceType">
                     <option value="" disabled selected>Seleccionar Tipo de Servicio</option>
                     <!-- Opciones -->
                     <option value="Examen y Evaluación de Documentos">Examen y Evaluación de Documentos</option>
@@ -234,10 +234,10 @@ h1 {
                     <option value="Servicios de consultoría y gestión">Servicios de consultoría y gestión</option>
                     <option value="Otros servicios profesionales, científicos y técnicos">Otros servicios profesionales, científicos y técnicos</option>
                 </select><br>
-                <input type="date" id="edit-date" required><br>
-                <input type="time" id="edit-time" required><br>
-                <input type="tel" id="edit-phone" placeholder="Teléfono" required><br>
-                <select id="edit-contactMethod" required>
+                <input type="date" id="edit-date"><br>
+                <input type="time" id="edit-time"><br>
+                <input type="tel" id="edit-phone" placeholder="Teléfono"><br>
+                <select id="edit-contactMethod">
                     <option value="" disabled selected>Seleccionar Método de Contacto</option>
                     <option value="Teléfono">Teléfono</option>
                     <option value="Correo">Correo</option>
@@ -327,13 +327,13 @@ h1 {
     // Función para mostrar el formulario de edición con los datos de la consulta
     function showEditForm(query) {
         document.getElementById('edit-query-id').value = query._id;
-        document.getElementById('edit-title').value = query.title;
-        document.getElementById('edit-description').value = query.description;
-        document.getElementById('edit-serviceType').value = query.serviceType;
-        document.getElementById('edit-date').value = query.date;
-        document.getElementById('edit-time').value = query.time;
-        document.getElementById('edit-phone').value = query.phone;
-        document.getElementById('edit-contactMethod').value = query.contactMethod;
+        document.getElementById('edit-title').value = query.title || '';
+        document.getElementById('edit-description').value = query.description || '';
+        document.getElementById('edit-serviceType').value = query.serviceType || '';
+        document.getElementById('edit-date').value = query.date || '';
+        document.getElementById('edit-time').value = query.time || '';
+        document.getElementById('edit-phone').value = query.phone || '';
+        document.getElementById('edit-contactMethod').value = query.contactMethod || '';
         editQueryFormElement.style.display = 'block';
         createQueryForm.style.display = 'none';
     }
@@ -372,20 +372,27 @@ h1 {
     });
 
     // Función para manejar el envío del formulario de edición de consulta
-    editQueryForm.addEventListener('submit', function(event) {
+    editQueryFormElement.addEventListener('submit', function(event) {
         event.preventDefault();
 
         const queryId = document.getElementById('edit-query-id').value;
 
         const updatedQuery = {
-            title: document.getElementById('edit-title').value,
-            description: document.getElementById('edit-description').value,
-            serviceType: document.getElementById('edit-serviceType').value,
-            date: document.getElementById('edit-date').value,
-            time: document.getElementById('edit-time').value,
-            phone: document.getElementById('edit-phone').value,
-            contactMethod: document.getElementById('edit-contactMethod').value
+            title: document.getElementById('edit-title').value || undefined,
+            description: document.getElementById('edit-description').value || undefined,
+            serviceType: document.getElementById('edit-serviceType').value || undefined,
+            date: document.getElementById('edit-date').value || undefined,
+            time: document.getElementById('edit-time').value || undefined,
+            phone: document.getElementById('edit-phone').value || undefined,
+            contactMethod: document.getElementById('edit-contactMethod').value || undefined
         };
+
+        // Remove undefined fields
+        Object.keys(updatedQuery).forEach(key => {
+            if (updatedQuery[key] === undefined) {
+                delete updatedQuery[key];
+            }
+        });
 
         fetch(`/api/queries/${queryId}`, {
             method: 'PUT',
