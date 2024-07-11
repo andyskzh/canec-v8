@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+h1 {
+    color: #0056b3;
+    text-align: center;
+}
+
+#show-create-form-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#show-create-form-btn:hover {
+    background-color: #0056b3;
+}
+
+#create-user-form, #edit-user-form {
+    margin-top: 20px;
+}
+
+#create-user-form h2, #edit-user-form h2 {
+    text-align: center;
+    color: #0056b3;
+}
+
+#create-user-form form, #edit-user-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+#create-user-form input, #create-user-form select, 
+#edit-user-form input, #edit-user-form select {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+#create-user-form button, #edit-user-form button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#create-user-form button:hover, #edit-user-form button:hover {
+    background-color: #218838;
+}
+
+.user-item {
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    background: #eee;
+    border: 1px solid #ddd;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+}
+
+.user-details {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.user-role {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: rgb(7, 7, 7);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.details-btn, .edit-btn, .delete-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.details-btn {
+    color: #007bff;
+}
+
+.details-btn:hover {
+    color: #0056b3;
+}
+
+.edit-btn {
+    color: #007bff;
+}
+
+.edit-btn:hover {
+    color: #0056b3;
+}
+
+.delete-btn {
+    color: #dc3545;
+}
+
+.delete-btn:hover {
+    color: #c82333;
+}
+
+.user-item div {
+    margin-bottom: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Usuarios</h1>
+        <button id="show-create-form-btn">Crear Usuario</button>
+
+        <div id="create-user-form" style="display: none;">
+            <h2>Crear Nuevo Usuario</h2>
+            <form id="new-user-form">
+                <input type="text" id="name" placeholder="Nombre" required><br>
+                <input type="email" id="email" placeholder="Correo electrónico" required><br>
+                <input type="password" id="password" placeholder="Contraseña" required><br>
+                <select id="role" required>
+                    <option value="" disabled selected>Seleccionar Rol</option>
+                    <option value="user">Usuario</option>
+                    <option value="consultant">Consultor</option>
+                    <option value="admin">Administrador</option>
+                </select><br>
+                <button type="submit">Crear Usuario</button>
+            </form>
+        </div>
+
+        <div id="edit-user-form" style="display: none;">
+            <h2>Editar Usuario</h2>
+            <form id="edit-user-form">
+                <input type="hidden" id="edit-user-id">
+                <input type="text" id="edit-name" placeholder="Nombre" required><br>
+                <input type="email" id="edit-email" placeholder="Correo electrónico" required><br>
+                <select id="edit-role" required>
+                    <option value="" disabled selected>Seleccionar Rol</option>
+                    <option value="user">Usuario</option>
+                    <option value="consultant">Consultor</option>
+                    <option value="admin">Administrador</option>
+                </select><br>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+        
+        <div id="users-container">
+            <!-- Aquí se mostrarán los usuarios -->
+        </div>
+    </div>
+    
+    <script src="admin-users.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const usersContainer = document.getElementById('users-container');
+    const createUserForm = document.getElementById('create-user-form');
+    const showCreateFormBtn = document.getElementById('show-create-form-btn');
+    const newUserForm = document.getElementById('new-user-form');
+    const editUserFormElement = document.getElementById('edit-user-form');
+
+    showCreateFormBtn.addEventListener('click', function() {
+        createUserForm.style.display = 'block';
+    });
+
+    // Función para cargar todos los usuarios
+    function loadAllUsers() {
+        fetch('/api/users', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then(response => response.json())
+        .then(users => {
+            usersContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar usuarios
+            users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.classList.add('user-item');
+
+                const userInfoDiv = document.createElement('div');
+                userInfoDiv.classList.add('user-info');
+
+                const nameDiv = document.createElement('div');
+                nameDiv.textContent = `Nombre: ${user.name}`;
+                userInfoDiv.appendChild(nameDiv);
+                
+                const emailDiv = document.createElement('div');
+                emailDiv.textContent = `Correo: ${user.email}`;
+                userInfoDiv.appendChild(emailDiv);
+                
+                const roleDiv = document.createElement('div');
+                roleDiv.textContent = `Rol: ${user.role}`;
+                roleDiv.classList.add('user-role');
+                userInfoDiv.appendChild(roleDiv);
+
+                const detailsButton = document.createElement('button');
+                detailsButton.innerHTML = '<i class="fas fa-info-circle"></i>';
+                detailsButton.classList.add('details-btn');
+                detailsButton.addEventListener('click', function() {
+                    toggleDetails(userDiv);
+                });
+
+                const editButton = document.createElement('button');
+                editButton.innerHTML = '<i class="fas fa-edit"></i>';
+                editButton.classList.add('edit-btn');
+                editButton.addEventListener('click', function() {
+                    showEditForm(user);
+                });
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.addEventListener('click', function() {
+                    deleteUser(user._id);
+                });
+
+                userDiv.appendChild(userInfoDiv);
+                userDiv.appendChild(detailsButton);
+                userDiv.appendChild(editButton);
+                userDiv.appendChild(deleteButton);
+
+                // Crear el contenedor de detalles
+                const detailsDiv = document.createElement('div');
+                detailsDiv.classList.add('user-details');
+                detailsDiv.style.display = 'none';
+                detailsDiv.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Correo:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${user.role}</p>
+                `;
+
+                userDiv.appendChild(detailsDiv);
+                usersContainer.appendChild(userDiv);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Función para mostrar el formulario de edición con los datos del usuario
+    function showEditForm(user) {
+        document.getElementById('edit-user-id').value = user._id;
+        document.getElementById('edit-name').value = user.name;
+        document.getElementById('edit-email').value = user.email;
+        document.getElementById('edit-role').value = user.role;
+        editUserFormElement.style.display = 'block';
+        createUserForm.style.display = 'none';
+    }
+
+    // Función para manejar el envío del formulario de creación de usuario
+    newUserForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const newUser = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            role: document.getElementById('role').value
+        };
+
+        fetch('/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(newUser)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Usuario creado:', data);
+            createUserForm.style.display = 'none';
+            newUserForm.reset();
+            loadAllUsers();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Función para manejar el envío del formulario de edición de usuario
+    editUserFormElement.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const userId = document.getElementById('edit-user-id').value;
+
+        const updatedUser = {
+            name: document.getElementById('edit-name').value,
+            email: document.getElementById('edit-email').value,
+            role: document.getElementById('edit-role').value
+        };
+
+        fetch(`/api/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(updatedUser)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Usuario actualizado:', data);
+            editUserFormElement.style.display = 'none';
+            loadAllUsers();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Función para manejar la eliminación de usuario
+    function deleteUser(userId) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminarlo'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/api/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Usuario eliminado:', data);
+                    loadAllUsers();
+                    Swal.fire(
+                        'Eliminado',
+                        'El usuario ha sido eliminado.',
+                        'success'
+                    );
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    }
+
+    // Función para mostrar u ocultar los detalles de un usuario
+    function toggleDetails(userDiv) {
+        const detailsDiv = userDiv.querySelector('.user-details');
+        if (detailsDiv.style.display === 'none') {
+            detailsDiv.style.display = 'block';
+        } else {
+            detailsDiv.style.display = 'none';
+        }
+    }
+
+    loadAllUsers();
+});
+
+    </script>
+</body>
+</html>

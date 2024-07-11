@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           window.location.href = "consultor-dashboard.html";
                           break;
                       case 'admin':
-                          window.location.href = "admindashboard.html";
+                          window.location.href = "admin-dashboard.html";
                           break;
                       default:
                           window.location.href = "index.html";

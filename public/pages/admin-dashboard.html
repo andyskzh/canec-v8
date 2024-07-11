@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="dashboard-container section-padding">
+        <h1 class="section-title">User Dashboard</h1>
+        <div class="user-info theme-shadow">
+            <p id="user-name">Nombre: <span id="name-placeholder"></span></p>
+            <p id="user-email">Correo: <span id="email-placeholder"></span></p>
+        </div>
+        <div class="dashboard-buttons">
+            <button class="btn btn-brand" onclick="location.href='manage-users.html'">Gestionar Usuarios</button>
+            <button class="btn btn-brand" onclick="location.href='manage-queries.html'">Gestionar Consultas</button>
+            <button class="btn btn-brand" id="logout">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <script src="../main.js"></script>
+</body>
+</html>
