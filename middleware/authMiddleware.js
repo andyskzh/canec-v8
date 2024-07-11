@@ -19,3 +19,11 @@ exports.adminMiddleware = (req, res, next) => {
     res.status(401).json({ message: 'Not authorized as an admin' });
   }
 };
+
+exports.consultorMiddleware = (req, res, next) => {
+  if (req.user && req.user.role === 'consultant') {
+    next();
+  } else {
+    res.status(403).json({ message: 'Acceso no autorizado. Se requiere rol de consultor.' });
+  }
+};
