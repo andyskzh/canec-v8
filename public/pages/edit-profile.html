@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Establece una tipografía consistente */
+            background-color: #f4f4f4; /* Color de fondo suave */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Utiliza toda la altura de la ventana */
+            margin: 0; /* Elimina los márgenes predeterminados */
+        }
+    
+        .container {
+            width: 100%;
+            max-width: 360px; /* Ancho máximo para la caja */
+            padding: 20px;
+            background: #ffffff; /* Fondo blanco para el formulario */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra suave */
+            border-radius: 8px; /* Bordes redondeados */
+        }
+    
+        .form-group {
+            margin-bottom: 20px; /* Espacio entre los campos */
+        }
+    
+        label {
+            font-size: 16px; /* Tamaño de fuente para las etiquetas */
+            color: #333; /* Color de texto oscuro para mejor legibilidad */
+        }
+    
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc; /* Borde sutil */
+            border-radius: 4px; /* Bordes ligeramente redondeados para los inputs */
+        }
+    
+        button {
+            padding: 10px 0;
+            background-color: #0056b3; /* Color azul oscuro para el botón, ajustable a tu tema */
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px; /* Bordes redondeados para el botón */
+        }
+    
+        button:hover {
+            background-color: #003875; /* Un tono más oscuro para el hover */
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Perfil</h1>
+        <form id="edit-profile-form">
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" placeholder="Tu correo electrónico" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Nueva contraseña (opcional):</label>
+                <input type="password" id="password" name="password" placeholder="Nueva contraseña">
+            </div>
+            <button type="submit">Guardar Cambios</button>
+        </form>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('edit-profile-form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+        
+                // Asumiendo que tienes una forma de obtener el ID del usuario o que se usa el token para identificarlo
+                console.log('Token enviado:', localStorage.getItem('token'));
+
+                fetch('/api/users/profile', {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ name, email, password })
+})
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Perfil actualizado con éxito.');
+                        // Opcionalmente puedes redirigir al usuario o recargar la página
+                    } else {
+                        alert('Error al actualizar el perfil: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al procesar la solicitud.');
+                });
+            });
+        });
+        </script>
+        
+</body>
+</html>
