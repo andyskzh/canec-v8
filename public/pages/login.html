@@ -80,28 +80,11 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group form-check">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="rememberMe"
-                />
-                <label class="form-check-label" for="rememberMe"
-                  >Recordar Contraseña</label
-                >
-              </div>
+            
               <button type="submit" class="btn btn-primary btn-block">
                 Iniciar Sesión
               </button>
-              <div class="form-group mt-3 text-center">
-                <a
-                  href="#"
-                  class="text-primary"
-                  data-toggle="modal"
-                  data-target="#resetPasswordModal"
-                  >¿Olvidaste tu contraseña?</a
-                >
-              </div>
+             
               <div class="form-group mt-3 text-center">
                 <p>
                   ¿No tienes una cuenta?
@@ -241,5 +224,17 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="../main.js"></script>
+    <script>
+      const toggleLoginPassword = document.getElementById("togglePassword");
+    const loginPasswordField = document.getElementById("password");
+
+    if (toggleLoginPassword) {
+      toggleLoginPassword.addEventListener("click", function() {
+        const type = loginPasswordField.getAttribute("type") === "password" ? "text" : "password";
+        loginPasswordField.setAttribute("type", type);
+        this.innerHTML = type === "text" ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+      });
+    }
+    </script>
   </body>
 </html>
