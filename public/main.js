@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           window.location.href = "user-dashboard.html";
                           break;
                       case 'consultant':
-                          window.location.href = "consultantdashboard.html";
+                          window.location.href = "consultor-dashboard.html";
                           break;
                       case 'admin':
                           window.location.href = "admindashboard.html";
