@@ -77,7 +77,12 @@ exports.updateQuery = async (req, res) => {
             return res.status(404).json({ message: 'Consulta no encontrada' });
         }
 
-        // Si el usuario no es un consultor, solo puede actualizar sus propias consultas
+        // Solo permitir la actualización si la consulta está en estado "pending"
+        if (query.status !== 'pending' && req.user.role !== 'admin') {
+            return res.status(400).json({ message: 'No se puede actualizar una consulta que no está pendiente' });
+        }
+
+        // Si el usuario no es un consultor o administrador, solo puede actualizar sus propias consultas
         if (req.user.role !== 'consultant' && req.user.role !== 'admin') {
             if (query.user.toString() !== req.user._id.toString()) {
                 return res.status(403).json({ message: 'No autorizado para actualizar esta consulta' });
@@ -117,6 +122,11 @@ exports.deleteQuery = async (req, res) => {
 
         if (!query) {
             return res.status(404).json({ message: 'Consulta no encontrada' });
+        }
+
+        // Solo permitir la eliminación si la consulta está en estado "pending"
+        if (query.status !== 'pending') {
+            return res.status(400).json({ message: 'No se puede eliminar una consulta que no está pendiente' });
         }
 
         // Los administradores pueden eliminar cualquier consulta, los usuarios solo sus propias consultas
