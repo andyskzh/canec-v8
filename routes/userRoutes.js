@@ -5,13 +5,17 @@ const {
     getUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateUserProfile
 } = require('../controllers/userController');
 const { protect, adminMiddleware } = require('../middleware/authMiddleware');
 
 router.route('/')
     .get(protect, adminMiddleware, getUsers)
     .post(protect, adminMiddleware, createUser);
+
+router.route('/profile')
+    .put(protect, updateUserProfile);
 
 router.route('/:id')
     .get(protect, adminMiddleware, getUser)

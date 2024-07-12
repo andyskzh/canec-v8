@@ -18,7 +18,7 @@ router.route('/')
 
 // Rutas para consultores
 router.route('/all')
-    .get(protect, consultorMiddleware, getQueries); // Obtener todas las consultas para consultores
+    .get(protect, consultorMiddleware, getAllQueries); // Obtener todas las consultas para consultores
 
 // Rutas para administradores
 router.route('/admin')

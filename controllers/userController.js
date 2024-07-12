@@ -90,3 +90,29 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ message: 'Error eliminando usuario' });
     }
 };
+
+// Actualizar perfil de usuario autenticado
+exports.updateUserProfile = async (req, res) => {
+    const { name, email, password } = req.body;
+
+    try {
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+        }
+
+        await user.save();
+        res.status(200).json({ message: 'Perfil actualizado con éxito', user });
+    } catch (error) {
+        res.status(500).json({ message: 'Error actualizando perfil', error: error.message });
+    }
+};

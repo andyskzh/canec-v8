@@ -18,8 +18,6 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-
-
 exports.adminMiddleware = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
     next();

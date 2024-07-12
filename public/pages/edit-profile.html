@@ -6,57 +6,56 @@
     <title>Editar Perfil</title>
     <style>
         body {
-            font-family: Arial, sans-serif; /* Establece una tipografía consistente */
-            background-color: #f4f4f4; /* Color de fondo suave */
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Utiliza toda la altura de la ventana */
-            margin: 0; /* Elimina los márgenes predeterminados */
+            height: 100vh;
+            margin: 0;
         }
-    
+
         .container {
             width: 100%;
-            max-width: 360px; /* Ancho máximo para la caja */
+            max-width: 360px;
             padding: 20px;
-            background: #ffffff; /* Fondo blanco para el formulario */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra suave */
-            border-radius: 8px; /* Bordes redondeados */
+            background: #ffffff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
         }
-    
+
         .form-group {
-            margin-bottom: 20px; /* Espacio entre los campos */
+            margin-bottom: 20px;
         }
-    
+
         label {
-            font-size: 16px; /* Tamaño de fuente para las etiquetas */
-            color: #333; /* Color de texto oscuro para mejor legibilidad */
+            font-size: 16px;
+            color: #333;
         }
-    
+
         input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc; /* Borde sutil */
-            border-radius: 4px; /* Bordes ligeramente redondeados para los inputs */
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
-    
+
         button {
             padding: 10px 0;
-            background-color: #0056b3; /* Color azul oscuro para el botón, ajustable a tu tema */
+            background-color: #0056b3;
             color: white;
             border: none;
             cursor: pointer;
             width: 100%;
-            border-radius: 4px; /* Bordes redondeados para el botón */
+            border-radius: 4px;
         }
-    
+
         button:hover {
-            background-color: #003875; /* Un tono más oscuro para el hover */
+            background-color: #003875;
         }
     </style>
-    
 </head>
 <body>
     <div class="container">
@@ -77,7 +76,7 @@
             <button type="submit">Guardar Cambios</button>
         </form>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('edit-profile-form');
@@ -86,23 +85,19 @@
                 const name = document.getElementById('name').value;
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
-        
-                // Asumiendo que tienes una forma de obtener el ID del usuario o que se usa el token para identificarlo
-                console.log('Token enviado:', localStorage.getItem('token'));
 
                 fetch('/api/users/profile', {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-    },
-    body: JSON.stringify({ name, email, password })
-})
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ name, email, password })
+                })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    if (data.message === 'Perfil actualizado con éxito') {
                         alert('Perfil actualizado con éxito.');
-                        // Opcionalmente puedes redirigir al usuario o recargar la página
                     } else {
                         alert('Error al actualizar el perfil: ' + data.message);
                     }
@@ -113,7 +108,6 @@
                 });
             });
         });
-        </script>
-        
+    </script>
 </body>
 </html>
